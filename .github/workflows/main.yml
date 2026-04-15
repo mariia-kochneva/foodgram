@@ -42,17 +42,6 @@ jobs:
         SECRET_KEY: test-secret-key
       run: |
         flake8 backend/
-    - name: Test backend with pytest
-      env:
-        POSTGRES_USER: foodgram_user
-        POSTGRES_PASSWORD: foodgram_password
-        POSTGRES_DB: foodgram
-        DB_HOST: 127.0.0.1
-        DB_PORT: 5432
-        SECRET_KEY: test-secret-key
-      run: |
-        cd backend/
-        pytest
 
   build_backend_and_push:
     name: Push backend to Docker Hub

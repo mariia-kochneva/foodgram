@@ -34,7 +34,7 @@ services:
   frontend:
     image: mariiavi/foodgram_frontend:latest
     container_name: foodgram-front
-    command: sh -c "ls -la /app/build/ && cp -r /app/build/. /static/"
+    command: sh -c "cp -r /app/build/. /static/"
     volumes:
       - static:/static
     restart: "no"
@@ -44,11 +44,9 @@ services:
     container_name: foodgram-proxy
     ports:
       - "80:80"
-      - "443:443"
     volumes:
       - static:/static
       - media:/media
-      - /etc/letsencrypt:/etc/letsencrypt:ro
     restart: always
     depends_on:
       - backend

@@ -43,10 +43,12 @@ services:
     image: mariiavi/foodgram_gateway:latest
     container_name: foodgram-proxy
     ports:
-      - "8000:80"
+      - "80:80"
+      - "443:443"
     volumes:
       - static:/static
       - media:/media
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     restart: always
     depends_on:
       - backend

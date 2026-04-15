@@ -34,7 +34,7 @@ services:
   frontend:
     image: mariiavi/foodgram_frontend:latest
     container_name: foodgram-front
-    command: sh -c "cp -r /app/build/. /static/"
+    command: sh -c "cp -r /app/build/. /static/ && mv /static/static/* /static/"
     volumes:
       - static:/static
     restart: "no"

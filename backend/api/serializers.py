@@ -7,9 +7,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from users.models import User
-from recipes.models import (
-    Tag, Ingredient, Recipe, RecipeIngredient, Favorite, ShoppingCart
-)
+from recipes.models import Tag, Ingredient, Recipe, RecipeIngredient
 
 
 class Base64ImageField(serializers.ImageField):
@@ -69,7 +67,8 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             raise ValidationError('Имя пользователя "me" запрещено')
         if not re.match(r'^[\w.@+-]+$', value):
             raise ValidationError(
-                'Username может содержать только буквы, цифры и символы @/./+/-/_'
+                'Username может содержать только буквы,'
+                ' цифры и символы @/./+/-/_'
             )
         return value
 

@@ -2,22 +2,21 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.db.models import Count
 from django.contrib.auth.models import Group
-from rest_framework.authtoken.models import Token
 
 from users.models import User
 from .models import (
     Tag, Ingredient, Recipe, RecipeIngredient, Favorite, ShoppingCart
 )
+from .constants import SHORT_TEXT_LENGTH
 
 
 class ShortTextMixin:
     """Миксин для обрезки длинного текста."""
-    SHORT_TEXT_LENGTH = 50
 
     def short_text(self, obj):
         return (
-            obj.text[:self.SHORT_TEXT_LENGTH] + '…'
-            if len(obj.text) > self.SHORT_TEXT_LENGTH
+            obj.text[:SHORT_TEXT_LENGTH] + '…'
+            if len(obj.text) > SHORT_TEXT_LENGTH
             else obj.text
         )
     short_text.short_description = 'Описание'
@@ -113,6 +112,7 @@ class FavoriteAdmin(BaseUserRecipeAdmin):
 class ShoppingCartAdmin(BaseUserRecipeAdmin):
     pass
 
+
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     """Пользователи."""
@@ -132,7 +132,10 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('first_name', 'last_name', 'avatar')
         }),
         ('Права', {
-            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
+            'fields': (
+                'is_active', 'is_staff', 'is_superuser',
+                'groups', 'user_permissions'
+            )
         }),
         ('Даты', {
             'fields': ('last_login', 'date_joined')

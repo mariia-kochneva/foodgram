@@ -1,16 +1,22 @@
 from django.db import models
 from django.conf import settings
 
+from .constants import (
+    MAX_LENGTH_NAME,
+    MAX_LENGTH_SLUG,
+    MAX_LENGTH_MEASUREMENT_UNIT
+)
+
 
 class Tag(models.Model):
     """Теги для рецептов (завтрак, обед, ужин и т.д.)"""
     name = models.CharField(
-        max_length=200,
+        max_length=MAX_LENGTH_NAME,
         unique=True,
         verbose_name='Название'
     )
     slug = models.SlugField(
-        max_length=200,
+        max_length=MAX_LENGTH_SLUG,
         unique=True,
         verbose_name='Слаг'
     )
@@ -27,11 +33,11 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     """Ингредиенты для рецептов"""
     name = models.CharField(
-        max_length=200,
+        max_length=MAX_LENGTH_NAME,
         verbose_name='Название'
     )
     measurement_unit = models.CharField(
-        max_length=50,
+        max_length=MAX_LENGTH_MEASUREMENT_UNIT,
         verbose_name='Единица измерения'
     )
 
@@ -59,7 +65,7 @@ class Recipe(models.Model):
         verbose_name='Автор'
     )
     name = models.CharField(
-        max_length=200,
+        max_length=MAX_LENGTH_NAME,
         verbose_name='Название'
     )
     image = models.ImageField(
@@ -126,7 +132,10 @@ class RecipeIngredient(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.ingredient.name} - {self.amount} {self.ingredient.measurement_unit}'
+        return (
+            f'{self.ingredient.name} - {self.amount} '
+            f'{self.ingredient.measurement_unit}'
+        )
 
 
 class Favorite(models.Model):

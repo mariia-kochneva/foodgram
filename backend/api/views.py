@@ -85,7 +85,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         user = request.user
 
         if request.method == 'POST':
-            obj, created = model.objects.get_or_create(user=user, recipe=recipe)
+            obj, created = model.objects.get_or_create(
+                user=user, recipe=recipe
+            )
             if not created:
                 return Response(
                     {'error': 'Уже добавлено'},
@@ -154,9 +156,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             font_name = 'DejaVu'
         except Exception:
             pass
-
         bold_font = (
-            font_name + '-Bold' if font_name != 'Helvetica' 
+            font_name + '-Bold' if font_name != 'Helvetica'
             else 'Helvetica-Bold'
         )
 
@@ -190,7 +191,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         buffer.seek(0)
 
         response = HttpResponse(buffer, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="shopping_cart.pdf"'
+        response['Content-Disposition'] = (
+            'attachment; filename="shopping_cart.pdf"'
+        )
         return response
 
     @action(
@@ -332,4 +335,3 @@ class UserViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         return Response(status=status.HTTP_204_NO_CONTENT)
-

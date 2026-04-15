@@ -14,15 +14,17 @@ class Command(BaseCommand):
             os.path.join('..', 'data', 'ingredients.csv'),
             os.path.join('app', 'data', 'ingredients.csv'),
         ]
-        
+
         file_path = None
         for path in possible_paths:
             if os.path.exists(path):
                 file_path = path
                 break
-        
+
         if not file_path:
-            self.stdout.write(self.style.ERROR('Файл ingredients.csv не найден'))
+            self.stdout.write(
+                self.style.ERROR('Файл ingredients.csv не найден')
+            )
             return
 
         with open(file_path, 'r', encoding='utf-8') as file:

@@ -37,7 +37,7 @@ services:
     command: cp -r /app/build/* /static/
     volumes:
       - static:/static
-    restart: always
+    restart: "no"
 
   nginx:
     image: mariiavi/foodgram_gateway:latest

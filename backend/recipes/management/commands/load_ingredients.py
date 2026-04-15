@@ -8,11 +8,21 @@ class Command(BaseCommand):
     help = 'Загрузка ингредиентов из CSV-файла'
 
     def handle(self, *args, **options):
-        # Путь от backend/ к data/ingredients.csv
-        file_path = os.path.join('..', 'data', 'ingredients.csv')
-
-        if not os.path.exists(file_path):
-            self.stdout.write(self.style.ERROR(f'Файл не найден: {file_path}'))
+        # Пробуем несколько путей
+        possible_paths = [
+            os.path.join('data', 'ingredients.csv'),
+            os.path.join('..', 'data', 'ingredients.csv'),
+            os.path.join('app', 'data', 'ingredients.csv'),
+        ]
+        
+        file_path = None
+        for path in possible_paths:
+            if os.path.exists(path):
+                file_path = path
+                break
+        
+        if not file_path:
+            self.stdout.write(self.style.ERROR('Файл ingredients.csv не найден'))
             return
 
         with open(file_path, 'r', encoding='utf-8') as file:
@@ -21,12 +31,16 @@ class Command(BaseCommand):
             for row in reader:
                 if len(row) >= 2:
                     ingredients.append(
-                        Ingredient(name=row[0].strip(),
-                                   measurement_unit=row[1].strip())
+                        Ingredient(
+                            name=row[0].strip(),
+                            measurement_unit=row[1].strip()
+                        )
                     )
 
         Ingredient.objects.bulk_create(ingredients, ignore_conflicts=True)
 
         self.stdout.write(
-            self.style.SUCCESS(f'Загружено {len(ingredients)} ингредиентов')
+            self.style.SUCCESS(
+                f'Загружено {len(ingredients)} ингредиентов из {file_path}'
+            )
         )

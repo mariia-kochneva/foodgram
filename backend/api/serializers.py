@@ -2,7 +2,6 @@ import base64
 import re
 
 from django.core.files.base import ContentFile
-from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 

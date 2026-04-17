@@ -149,20 +149,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
         p = canvas.Canvas(buffer, pagesize=A4)
         width, height = A4
 
-        # Настройка шрифта с поддержкой кириллицы
         font_name = 'Helvetica'
         try:
             pdfmetrics.registerFont(TTFont('DejaVu', 'DejaVuSans.ttf'))
             font_name = 'DejaVu'
         except Exception:
             pass
-        bold_font = (
-            font_name + '-Bold' if font_name != 'Helvetica'
-            else 'Helvetica-Bold'
-        )
 
         # Заголовок
-        p.setFont(bold_font, 16)
+        p.setFont(font_name, 16)
         p.drawString(50, height - 50, 'Список покупок')
         p.setFont(font_name, 12)
         p.drawString(50, height - 70, f'Пользователь: {request.user.username}')

@@ -54,7 +54,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
-class CustomUserCreateSerializer(UserCreateSerializer):
+class CustomUserCreateSerializer(serializers.ModelSerializer):
     """Сериализатор для регистрации пользователя."""
 
     password = serializers.CharField(write_only=True, min_length=8)

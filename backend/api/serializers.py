@@ -57,20 +57,28 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 class CustomUserCreateSerializer(UserCreateSerializer):
     """Сериализатор для регистрации пользователя."""
 
-    class Meta(UserCreateSerializer.Meta):
+    password = serializers.CharField(write_only=True, min_length=8)
+
+    class Meta:
         model = User
         fields = ('email', 'username', 'first_name', 'last_name', 'password')
 
     def validate_username(self, value):
-        """Проверка username: не 'me' и только допустимые символы."""
         if value.lower() == 'me':
             raise ValidationError('Имя пользователя "me" запрещено')
         if not re.match(r'^[\w.@+-]+$', value):
             raise ValidationError(
-                'Username может содержать только буквы,'
-                ' цифры и символы @/./+/-/_'
+                'Username может содержать только буквы, цифры и символы @/./+/-/_'
             )
         return value
+
+    def validate_email(self, value):
+        return value.strip().lower()
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User.objects.create_user(**validated_data, password=password)
+        return user
 
 
 class UserSerializer(serializers.ModelSerializer):

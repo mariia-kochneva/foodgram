@@ -68,7 +68,8 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             raise ValidationError('Имя пользователя "me" запрещено')
         if not re.match(r'^[\w.@+-]+$', value):
             raise ValidationError(
-                'Username может содержать только буквы, цифры и символы @/./+/-/_'
+                'Username может содержать только буквы,'
+                ' цифры и символы @/./+/-/_'
             )
         return value
 

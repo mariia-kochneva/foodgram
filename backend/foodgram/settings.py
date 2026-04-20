@@ -133,4 +133,9 @@ DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': False,
 }
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://foodgrami.ddns.net',
+    'http://foodgrami.ddns.net',
+]
+
 AUTH_USER_MODEL = 'users.User'

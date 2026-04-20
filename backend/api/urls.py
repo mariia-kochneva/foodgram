@@ -6,6 +6,7 @@ from .views import (
     IngredientViewSet,
     RecipeViewSet,
     UserViewSet,
+    RegisterView,
 )
 
 
@@ -19,4 +20,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
+    path('auth/register/', RegisterView.as_view(), name='register'),
 ]

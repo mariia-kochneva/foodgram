@@ -6,12 +6,14 @@ from rest_framework import viewsets, status, filters
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from io import BytesIO
 from django_filters.rest_framework import DjangoFilterBackend
+
 
 from users.models import User, Subscription
 from recipes.models import (
@@ -29,6 +31,7 @@ from .serializers import (
     SubscribeSerializer,
     SetAvatarSerializer,
     SetPasswordSerializer,
+    CustomUserCreateSerializer,
 )
 from .filters import RecipeFilter, IngredientFilter
 
@@ -333,3 +336,16 @@ class UserViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class RegisterView(APIView):
+    """Кастомная регистрация с правильным хешированием пароля."""
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = CustomUserCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response(
+            UserSerializer(user).data, status=status.HTTP_201_CREATED
+        )

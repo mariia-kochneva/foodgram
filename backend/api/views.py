@@ -220,6 +220,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         """Выбор сериализатора в зависимости от действия."""
+        if self.action == 'create':
+            return CustomUserCreateSerializer
         if self.action == 'subscriptions':
             return UserWithRecipesSerializer
         if self.action == 'subscribe':

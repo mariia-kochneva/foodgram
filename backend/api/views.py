@@ -213,7 +213,7 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username', 'email')
     lookup_field = 'id'
-    http_method_names = ['get', 'post']
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_serializer_class(self):
         """Выбор сериализатора в зависимости от действия."""
@@ -222,6 +222,13 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action == 'subscribe':
             return SubscribeSerializer
         return UserSerializer
+
+    def perform_create(self, serializer):
+        """Используем create_user для правильного хеширования пароля."""
+        data = serializer.validated_data
+        password = data.pop('password')
+        user = User.objects.create_user(**data, password=password)
+        return user
 
     @action(
         methods=['GET'],

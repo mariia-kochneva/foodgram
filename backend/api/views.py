@@ -216,7 +216,7 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username', 'email')
     lookup_field = 'id'
-    http_method_names = ['get', 'post', 'patch', 'delete']
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete']
 
     def get_serializer_class(self):
         """Выбор сериализатора в зависимости от действия."""

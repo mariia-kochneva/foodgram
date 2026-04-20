@@ -130,6 +130,7 @@ DJOSER = {
         'user': ['rest_framework.permissions.AllowAny'],
         'user_list': ['rest_framework.permissions.AllowAny'],
     },
+    'USER_CREATE_PASSWORD_RETYPE': False,
 }
 
 AUTH_USER_MODEL = 'users.User'

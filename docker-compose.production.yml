@@ -44,9 +44,11 @@ services:
     container_name: foodgram-proxy
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - static:/static
       - media:/media
+      - /etc/letsencrypt:/etc/letsencrypt:ro  
     restart: always
     depends_on:
       - backend

@@ -224,11 +224,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return UserSerializer
 
     def perform_create(self, serializer):
-        """Используем create_user для правильного хеширования пароля."""
-        data = serializer.validated_data
-        password = data.pop('password')
-        user = User.objects.create_user(**data, password=password)
-        return user
+        serializer.save()
 
     @action(
         methods=['GET'],

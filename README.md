@@ -7,6 +7,7 @@
 ## Ссылка на развернутый проект
 
 [Foodgram](http://foodgrami.ddns.net)
+
 **Важно:** ВМ отключается через 4 часа. Если сайт недоступен, необходима перезагрузка ВМ. (p.s. как правильно это организовать, не знаю)
 
 ## Автор
@@ -133,8 +134,7 @@
 Статус последнего workflow: [![CI/CD](https://github.com/mariia-kochneva/foodgram/actions/workflows/main.yml/badge.svg)](https://github.com/mariia-kochneva/foodgram/actions/workflows/main.yml)
 
 Успешный деплой подтверждается зелёным бейджем и сообщением в Telegram.
-```
 
----
+
 
 

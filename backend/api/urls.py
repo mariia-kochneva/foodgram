@@ -21,7 +21,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
-    path('auth/register/', RegisterView.as_view(), name='register'),
     path(
         'r/<int:pk>/', RecipeShortLinkView.as_view(), name='recipe-short-link'
     ),

@@ -57,7 +57,7 @@ class RecipeShortLinkView(APIView):
 
     def get(self, request, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
-        return redirect('recipe-detail', pk=recipe.id)
+        return redirect('recipes-detail', pk=recipe.id)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -290,16 +290,3 @@ class UserViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class RegisterView(APIView):
-    """Кастомная регистрация с правильным хешированием пароля."""
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        serializer = CustomUserCreateSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        return Response(
-            UserSerializer(user).data, status=status.HTTP_201_CREATED
-        )

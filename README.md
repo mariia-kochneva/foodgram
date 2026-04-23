@@ -1,7 +1,5 @@
 # Foodgram
 
-[![CI/CD](https://github.com/mariia-kochneva/foodgram/actions/workflows/main.yml/badge.svg)](https://github.com/mariia-kochneva/foodgram/actions/workflows/main.yml)
-
 Проект "Foodgram" — сайт, на котором пользователи публикуют рецепты, добавляют чужие рецепты в избранное и подписываются на публикации других авторов. Доступен сервис «Список покупок» для создания перечня продуктов.
 
 ## Ссылка на развернутый проект

@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db.models import Q
+
+from .constants import MAX_LENGTH_EMAIL, MAX_LENGTH_NAME
 
 
 class UserManager(BaseUserManager):
@@ -22,16 +25,16 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     email = models.EmailField(
-        max_length=254,
+        max_length=MAX_LENGTH_EMAIL,
         unique=True,
         verbose_name='Email'
     )
     first_name = models.CharField(
-        max_length=150,
+        max_length=MAX_LENGTH_NAME,
         verbose_name='Имя'
     )
     last_name = models.CharField(
-        max_length=150,
+        max_length=MAX_LENGTH_NAME,
         verbose_name='Фамилия'
     )
     avatar = models.ImageField(
@@ -80,7 +83,11 @@ class Subscription(models.Model):
             models.UniqueConstraint(
                 fields=['user', 'author'],
                 name='unique_subscription'
-            )
+            ),
+            models.CheckConstraint(
+                condition=~Q(user=models.F('author')),
+                name='prevent_self_subscription'
+            ),
         ]
 
     def __str__(self):

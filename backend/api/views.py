@@ -27,7 +27,6 @@ from .serializers import (
     SubscribeSerializer,
     SetAvatarSerializer,
     SetPasswordSerializer,
-    CustomUserCreateSerializer,
 )
 from .filters import RecipeFilter, IngredientFilter
 from .utils import get_shopping_cart_ingredients, generate_shopping_cart_pdf
@@ -173,7 +172,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         """Выбор сериализатора в зависимости от действия."""
         if self.action == 'create':
-            return CustomUserCreateSerializer
+            return UserRegistrationSerializer
         if self.action == 'subscriptions':
             return UserWithRecipesSerializer
         if self.action == 'subscribe':

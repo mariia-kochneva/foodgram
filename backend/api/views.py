@@ -56,8 +56,8 @@ class RecipeShortLinkView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, pk):
-        recipe = get_object_or_404(Recipe, pk=pk)
-        return redirect('recipes-detail', pk=recipe.id)
+        get_object_or_404(Recipe, pk=pk)
+        return redirect(request.build_absolute_uri(f'/recipes/{pk}'))
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

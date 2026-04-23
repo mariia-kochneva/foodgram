@@ -4,7 +4,6 @@ from django.contrib.auth.models import Group
 from django.db.models import Count
 
 from users.models import User
-
 from .constants import SHORT_TEXT_LENGTH
 from .models import (
     Favorite, Ingredient, Recipe, RecipeIngredient, ShoppingCart, Tag

@@ -1,14 +1,14 @@
 from django_filters.rest_framework import (
-    FilterSet, CharFilter, BooleanFilter
+    BooleanFilter, CharFilter, FilterSet
 )
 
-from recipes.models import Recipe, Ingredient
+from recipes.models import Ingredient, Recipe
 
 
 class RecipeFilter(FilterSet):
     """Фильтр для рецептов."""
     tags = CharFilter(
-        field_name='tags__slug', lookup_expr='exact', method='filter_tags'
+        field_name='tags__slug', method='filter_tags'
     )
     is_favorited = BooleanFilter(method='filter_is_favorited')
     is_in_shopping_cart = BooleanFilter(method='filter_is_in_shopping_cart')
@@ -25,14 +25,12 @@ class RecipeFilter(FilterSet):
         return queryset
 
     def filter_is_favorited(self, queryset, name, value):
-        """Фильтрация по избранному (только для авторизованных)."""
         user = self.request.user
         if value and user.is_authenticated:
             return queryset.filter(favorites__user=user)
         return queryset
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
-        """Фильтрация по списку покупок (только для авторизованных)."""
         user = self.request.user
         if value and user.is_authenticated:
             return queryset.filter(shopping_cart__user=user)
@@ -46,12 +44,3 @@ class IngredientFilter(FilterSet):
     class Meta:
         model = Ingredient
         fields = ['name']
-
-    def filter_name(self, queryset, name, value):
-        starts_with = queryset.filter(name__istartswith=value)
-        contains = (
-            queryset
-            .filter(name__icontains=value)
-            .exclude(name__istartswith=value)
-        )
-        return starts_with | contains

@@ -1,20 +1,17 @@
 from django.db.models import Count
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
-
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from recipes.models import (
     Favorite, Ingredient, Recipe, ShoppingCart, Tag
 )
 from users.models import Subscription, User
-
 from .filters import IngredientFilter, RecipeFilter
 from .permissions import IsAuthenticatedOnly, IsAuthorOrReadOnly
 from .serializers import (
@@ -49,15 +46,6 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
-
-
-class RecipeShortLinkView(APIView):
-    """Редирект по короткой ссылке на рецепт."""
-    permission_classes = [AllowAny]
-
-    def get(self, request, pk):
-        get_object_or_404(Recipe, pk=pk)
-        return redirect(request.build_absolute_uri(f'/recipes/{pk}'))
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -179,9 +167,6 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action == 'subscribe':
             return SubscribeSerializer
         return UserSerializer
-
-    def perform_create(self, serializer):
-        serializer.save()
 
     @action(
         methods=['GET'],

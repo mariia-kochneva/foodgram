@@ -132,7 +132,3 @@
 Статус последнего workflow: [![CI/CD](https://github.com/mariia-kochneva/foodgram/actions/workflows/main.yml/badge.svg)](https://github.com/mariia-kochneva/foodgram/actions/workflows/main.yml)
 
 Успешный деплой подтверждается зелёным бейджем и сообщением в Telegram.
-
-
-
-

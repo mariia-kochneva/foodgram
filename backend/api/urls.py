@@ -6,7 +6,6 @@ from .views import (
     IngredientViewSet,
     RecipeViewSet,
     UserViewSet,
-    RegisterView,
 )
 from .views import RecipeShortLinkView
 

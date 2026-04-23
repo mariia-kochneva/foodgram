@@ -1,4 +1,4 @@
-from django.db.models import Sum, Count
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 
@@ -7,17 +7,12 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from io import BytesIO
 from django_filters.rest_framework import DjangoFilterBackend
 
 
 from users.models import User, Subscription
 from recipes.models import (
-    Tag, Ingredient, Recipe, RecipeIngredient, Favorite, ShoppingCart
+    Tag, Ingredient, Recipe, Favorite, ShoppingCart
 )
 from .permissions import IsAuthorOrReadOnly, IsAuthenticatedOnly
 from .serializers import (

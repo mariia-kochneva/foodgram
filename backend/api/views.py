@@ -34,6 +34,7 @@ from .serializers import (
     CustomUserCreateSerializer,
 )
 from .filters import RecipeFilter, IngredientFilter
+from .utils import get_shopping_cart_ingredients, generate_shopping_cart_pdf
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -56,19 +57,16 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """Рецепты."""
+    queryset = Recipe.objects.select_related('author').prefetch_related(
+        'tags',
+        'recipe_ingredients__ingredient',
+        'favorites',
+        'shopping_cart',
+    )
     permission_classes = [IsAuthorOrReadOnly]
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     http_method_names = ['get', 'post', 'patch', 'delete']
-
-    def get_queryset(self):
-        """Оптимизированный queryset с предзагрузкой связанных данных."""
-        return Recipe.objects.select_related('author').prefetch_related(
-            'tags',
-            'recipe_ingredients__ingredient',
-            'favorites',
-            'shopping_cart',
-        )
 
     def get_serializer_class(self):
         """Выбор сериализатора в зависимости от действия."""
@@ -136,58 +134,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def download_shopping_cart(self, request):
         """Скачать список покупок в формате PDF."""
-        ingredients = (
-            RecipeIngredient.objects
-            .filter(recipe__shopping_cart__user=request.user)
-            .select_related('ingredient')
-            .values(
-                'ingredient__name',
-                'ingredient__measurement_unit'
-            )
-            .annotate(total_amount=Sum('amount'))
-            .order_by('ingredient__name')
-        )
-
-        buffer = BytesIO()
-        p = canvas.Canvas(buffer, pagesize=A4)
-        width, height = A4
-
-        font_name = 'Helvetica'
-        try:
-            pdfmetrics.registerFont(TTFont('DejaVu', 'DejaVuSans.ttf'))
-            font_name = 'DejaVu'
-        except Exception:
-            pass
-
-        # Заголовок
-        p.setFont(font_name, 16)
-        p.drawString(50, height - 50, 'Список покупок')
-        p.setFont(font_name, 12)
-        p.drawString(50, height - 70, f'Пользователь: {request.user.username}')
-
-        # Ингредиенты
-        y = height - 100
-        p.setFont(font_name, 10)
-
-        if not ingredients:
-            p.drawString(50, y, 'Список покупок пуст.')
-        else:
-            for item in ingredients:
-                line = (
-                    f"{item['ingredient__name']} "
-                    f"({item['ingredient__measurement_unit']}) — "
-                    f"{item['total_amount']}"
-                )
-                p.drawString(50, y, line)
-                y -= 15
-                if y < 50:
-                    p.showPage()
-                    y = height - 50
-                    p.setFont(font_name, 10)
-
-        p.save()
-        buffer.seek(0)
-
+        ingredients = get_shopping_cart_ingredients(request.user)
+        buffer = generate_shopping_cart_pdf(request.user, ingredients)
         response = HttpResponse(buffer, content_type='application/pdf')
         response['Content-Disposition'] = (
             'attachment; filename="shopping_cart.pdf"'

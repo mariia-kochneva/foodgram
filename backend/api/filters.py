@@ -1,5 +1,5 @@
 from django_filters.rest_framework import (
-    FilterSet, CharFilter, BooleanFilter, NumberFilter
+    FilterSet, CharFilter, BooleanFilter
 )
 
 from recipes.models import Recipe, Ingredient
@@ -7,7 +7,6 @@ from recipes.models import Recipe, Ingredient
 
 class RecipeFilter(FilterSet):
     """Фильтр для рецептов."""
-    author = NumberFilter(field_name='author__id', lookup_expr='exact')
     tags = CharFilter(
         field_name='tags__slug', lookup_expr='exact', method='filter_tags'
     )

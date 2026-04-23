@@ -1,7 +1,5 @@
-import base64
 import re
 
-from django.core.files.base import ContentFile
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from drf_extra_fields.fields import Base64ImageField

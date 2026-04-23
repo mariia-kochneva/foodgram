@@ -27,6 +27,7 @@ from .serializers import (
     SubscribeSerializer,
     SetAvatarSerializer,
     SetPasswordSerializer,
+    UserRegistrationSerializer,
 )
 from .filters import RecipeFilter, IngredientFilter
 from .utils import get_shopping_cart_ingredients, generate_shopping_cart_pdf

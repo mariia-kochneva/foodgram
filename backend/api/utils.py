@@ -2,9 +2,9 @@ from io import BytesIO
 
 from django.db.models import Sum
 from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
 
 from recipes.models import RecipeIngredient
 

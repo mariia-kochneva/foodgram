@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db import models
 from django.db.models import Q
 
 from .constants import MAX_LENGTH_EMAIL, MAX_LENGTH_NAME

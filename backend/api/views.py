@@ -1,36 +1,36 @@
 from django.db.models import Count
-from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 
-from rest_framework import viewsets, status, filters
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django_filters.rest_framework import DjangoFilterBackend
-from django.urls import reverse
-from django.shortcuts import redirect
 
-from users.models import User, Subscription
 from recipes.models import (
-    Tag, Ingredient, Recipe, Favorite, ShoppingCart
+    Favorite, Ingredient, Recipe, ShoppingCart, Tag
 )
-from .permissions import IsAuthorOrReadOnly, IsAuthenticatedOnly
+from users.models import Subscription, User
+
+from .filters import IngredientFilter, RecipeFilter
+from .permissions import IsAuthenticatedOnly, IsAuthorOrReadOnly
 from .serializers import (
-    TagSerializer,
     IngredientSerializer,
-    RecipeListSerializer,
     RecipeCreateUpdateSerializer,
+    RecipeListSerializer,
     RecipeMinifiedSerializer,
-    UserSerializer,
-    UserWithRecipesSerializer,
-    SubscribeSerializer,
     SetAvatarSerializer,
     SetPasswordSerializer,
+    SubscribeSerializer,
+    TagSerializer,
     UserRegistrationSerializer,
+    UserSerializer,
+    UserWithRecipesSerializer,
 )
-from .filters import RecipeFilter, IngredientFilter
-from .utils import get_shopping_cart_ingredients, generate_shopping_cart_pdf
+from .utils import generate_shopping_cart_pdf, get_shopping_cart_ingredients
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):

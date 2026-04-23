@@ -1,13 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.db.models import Count
 from django.contrib.auth.models import Group
+from django.db.models import Count
 
 from users.models import User
-from .models import (
-    Tag, Ingredient, Recipe, RecipeIngredient, Favorite, ShoppingCart
-)
+
 from .constants import SHORT_TEXT_LENGTH
+from .models import (
+    Favorite, Ingredient, Recipe, RecipeIngredient, ShoppingCart, Tag
+)
 
 
 class ShortTextMixin:

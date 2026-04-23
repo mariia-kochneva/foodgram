@@ -8,7 +8,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
-
+from django.urls import reverse
+from django.shortcuts import redirect
 
 from users.models import User, Subscription
 from recipes.models import (
@@ -48,6 +49,15 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
+
+
+class RecipeShortLinkView(APIView):
+    """Редирект по короткой ссылке на рецепт."""
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk):
+        recipe = get_object_or_404(Recipe, pk=pk)
+        return redirect('recipe-detail', pk=recipe.id)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -146,10 +156,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def get_link(self, request, pk=None):
         """Получить короткую ссылку на рецепт."""
         recipe = self.get_object()
-        host = request.get_host()
-        protocol = 'https' if request.is_secure() else 'http'
-        short_link = f"{protocol}://{host}/r/{recipe.id:x}"
-        return Response({'short-link': short_link})
+        relative_url = reverse('recipe-short-link', kwargs={'pk': recipe.id})
+        full_url = request.build_absolute_uri(relative_url)
+        return Response({'short-link': full_url})
 
 
 class UserViewSet(viewsets.ModelViewSet):

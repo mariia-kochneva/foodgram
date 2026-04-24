@@ -148,22 +148,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         full_url = request.build_absolute_uri(relative_url)
         return Response({'short-link': full_url})
 
-    @action(
-        methods=['PATCH'],
-        detail=True,
-        permission_classes=[IsAuthorOrReadOnly],
-        url_path='ingredients',
-    )
-    def update_ingredients(self, request, pk=None):
-        """Обновление только ингредиентов рецепта."""
-        recipe = self.get_object()
-        serializer = RecipeCreateUpdateSerializer(
-            recipe, data=request.data, partial=True
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-
 
 class UserViewSet(viewsets.ModelViewSet):
     """Пользователи."""

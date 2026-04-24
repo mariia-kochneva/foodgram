@@ -200,6 +200,11 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             instance.tags.set(tags)
 
         if ingredients is not None:
+            for item in ingredients:
+                print(
+                    f"DEBUG: id={item['id']}, id.id={item['id'].id}, "
+                    f"amount={item['amount']}"
+                )
             instance.recipe_ingredients.all().delete()
             for item in ingredients:
                 RecipeIngredient.objects.create(

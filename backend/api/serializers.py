@@ -191,7 +191,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         """Обновление рецепта."""
-        request = self.context.get('request')
         ingredients = validated_data.pop('ingredients', None)
         tags = validated_data.pop('tags', None)
 
@@ -199,7 +198,8 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
         if tags is not None:
             instance.tags.set(tags)
-        if request and request.data.getlist('ingredients'):
+
+        if ingredients is not None:
             instance.recipe_ingredients.all().delete()
             self._save_ingredients(instance, ingredients)
 

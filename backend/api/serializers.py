@@ -168,31 +168,16 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
         return value
 
-    def update(self, instance, validated_data):
-        """Обновление рецепта."""
-        ingredients = validated_data.pop('ingredients', None)
-        tags = validated_data.pop('tags', None)
-
-        # Временная отладка:
-        print("=== DEBUG UPDATE ===")
-        print(f"ingredients received: {ingredients}")
-        if ingredients:
-            for item in ingredients:
-                print(
-                    f"  item: {item}, id: {item.get('id')}, "
-                    f"amount: {item.get('amount')}"
-                )
-
-        instance = super().update(instance, validated_data)
-
-        if tags is not None:
-            instance.tags.set(tags)
-
-        if ingredients is not None:
-            instance.recipe_ingredients.all().delete()
-            self._save_ingredients(instance, ingredients)
-
-        return instance
+    def _save_ingredients(self, recipe, ingredients):
+        """Сохранение ингредиентов рецепта."""
+        RecipeIngredient.objects.bulk_create([
+            RecipeIngredient(
+                recipe=recipe,
+                ingredient_id=item['id'].id,
+                amount=item['amount']
+            )
+            for item in ingredients
+        ])
 
     def create(self, validated_data):
         """Создание рецепта с ингредиентами и тегами."""
@@ -211,7 +196,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
         instance = super().update(instance, validated_data)
 
-        if tags is not None:    # для PATCH-запроса
+        if tags is not None:
             instance.tags.set(tags)
 
         if ingredients is not None:

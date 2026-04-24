@@ -200,7 +200,8 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         if tags is not None:
             instance.tags.set(tags)
 
-        if ingredients is not None and 'ingredients' in request.data:
+        # Обновляем ТОЛЬКО если ingredients явно переданы
+        if 'ingredients' in request.data:
             instance.recipe_ingredients.all().delete()
             self._save_ingredients(instance, ingredients)
 

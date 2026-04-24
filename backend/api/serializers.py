@@ -194,22 +194,19 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('ingredients', None)
         tags = validated_data.pop('tags', None)
 
-        # Временная отладка
-        print("=== DEBUG UPDATE ===")
-        print(f"Request data: {self.context['request'].data}")
-        print(f"Ingredients from validated_data: {ingredients}")
-        print(f"Tags from validated_data: {tags}")
-
         instance = super().update(instance, validated_data)
 
         if tags is not None:
-            print(f"Setting tags: {tags}")
             instance.tags.set(tags)
 
         if ingredients is not None:
-            print(f"Deleting old ingredients, saving new: {ingredients}")
             instance.recipe_ingredients.all().delete()
-            self._save_ingredients(instance, ingredients)
+            for item in ingredients:
+                RecipeIngredient.objects.create(
+                    recipe=instance,
+                    ingredient=item['id'],
+                    amount=item['amount']
+                )
 
         return instance
 

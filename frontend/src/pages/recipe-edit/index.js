@@ -86,7 +86,11 @@ const RecipeEdit = ({ onItemDelete }) => {
   }, []);
 
   const { id } = useParams();
-  useEffect((_) => {
+  useEffect(
+    (_) => {
+      if (value.length === 0 || !loading) {
+        return;
+      }
       api
         .getRecipe({
           recipe_id: id,
@@ -109,7 +113,9 @@ const RecipeEdit = ({ onItemDelete }) => {
         .catch((err) => {
           history.push("/recipes");
         });
-    }, [id]);
+    },
+    [value]
+  );
 
   const handleIngredientAutofill = ({ id, name, measurement_unit }) => {
     setIngredientValue({

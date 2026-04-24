@@ -178,7 +178,10 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         print(f"ingredients received: {ingredients}")
         if ingredients:
             for item in ingredients:
-                print(f"  item: {item}, id: {item.get('id')}, amount: {item.get('amount')}")
+                print(
+                    f"  item: {item}, id: {item.get('id')}, "
+                    f"amount: {item.get('amount')}"
+                )
 
         instance = super().update(instance, validated_data)
 

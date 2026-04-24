@@ -213,7 +213,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
         return instance
 
-
     def to_representation(self, instance):
         """Возврат полного представления рецепта после создания/обновления."""
         return RecipeListSerializer(instance, context=self.context).data

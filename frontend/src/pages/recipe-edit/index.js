@@ -78,45 +78,24 @@ const RecipeEdit = ({ onItemDelete }) => {
     },
     [ingredientValue.name]
   );
-
+  useEffect(() => {
+    api.getRecipe({ recipe_id: id }).then((res) => {
+      const { image, tags, cooking_time, name, ingredients, text } = res;
+      setRecipeText(text);
+      setRecipeName(name);
+      setRecipeTime(cooking_time);
+      setRecipeFile(image);
+      setRecipeIngredients(ingredients);
+      setLoading(false);
+    });
+  }, [id]);
   useEffect((_) => {
     api.getTags().then((tags) => {
       setValue(tags.map((tag) => ({ ...tag, value: true })));
     });
   }, []);
 
-  const { id } = useParams();
-  useEffect(
-    (_) => {
-      if (value.length === 0 || !loading) {
-        return;
-      }
-      api
-        .getRecipe({
-          recipe_id: id,
-        })
-        .then((res) => {
-          const { image, tags, cooking_time, name, ingredients, text } = res;
-          setRecipeText(text);
-          setRecipeName(name);
-          setRecipeTime(cooking_time);
-          setRecipeFile(image);
-          setRecipeIngredients(ingredients);
-
-          const tagsValueUpdated = value.map((item) => {
-            item.value = Boolean(tags.find((tag) => tag.id === item.id));
-            return item;
-          });
-          setValue(tagsValueUpdated);
-          setLoading(false);
-        })
-        .catch((err) => {
-          history.push("/recipes");
-        });
-    },
-    [value]
-  );
-
+  
   const handleIngredientAutofill = ({ id, name, measurement_unit }) => {
     setIngredientValue({
       ...ingredientValue,

@@ -1,4 +1,5 @@
 import re
+import json
 
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -190,20 +191,17 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        """Обновление рецепта."""
         request = self.context.get('request')
         ingredients = validated_data.pop('ingredients', None)
         tags = validated_data.pop('tags', None)
+        raw_data = json.loads(request.body) if request.body else {}
 
         instance = super().update(instance, validated_data)
-
         if tags is not None:
             instance.tags.set(tags)
-
-        if 'ingredients' in request.data:
+        if 'ingredients' in raw_data:
             instance.recipe_ingredients.all().delete()
             self._save_ingredients(instance, ingredients)
-
         return instance
 
     def to_representation(self, instance):

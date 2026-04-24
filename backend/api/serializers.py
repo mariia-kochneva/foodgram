@@ -200,8 +200,20 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             instance.tags.set(tags)
 
         if ingredients is not None:
-            instance.recipe_ingredients.all().delete()
-            self._save_ingredients(instance, ingredients)
+            current = set(
+                instance.recipe_ingredients.values_list('ingredient_id', 'amount')
+            )
+            new = {(item['id'].id, int(item['amount'])) for item in ingredients}
+            
+            # Пишем в файл
+            with open('/tmp/debug.log', 'a') as f:
+                f.write(f"CURRENT: {current}\n")
+                f.write(f"NEW: {new}\n")
+                f.write(f"EQUAL: {current == new}\n\n")
+            
+            if current != new:
+                instance.recipe_ingredients.all().delete()
+                self._save_ingredients(instance, ingredients)
 
         return instance
 

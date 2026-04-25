@@ -42,6 +42,8 @@ class RecipeIngredientInline(admin.TabularInline):
     model = RecipeIngredient
     extra = 1
     min_num = 1
+    verbose_name = 'Ингредиент'
+    verbose_name_plural = 'Ингредиенты'
 
 
 @admin.register(Recipe)
@@ -58,7 +60,6 @@ class RecipeAdmin(ShortTextMixin, admin.ModelAdmin):
     ordering = ('-pub_date',)
 
     def get_queryset(self, request):
-        """Оптимизация: select_related + prefetch_related + аннотация."""
         return super().get_queryset(request).select_related(
             'author'
         ).prefetch_related(
@@ -81,26 +82,25 @@ class RecipeAdmin(ShortTextMixin, admin.ModelAdmin):
 
 
 class BaseUserRecipeAdmin(admin.ModelAdmin):
-    """Базовый класс для избранного и списка покупок."""
-    list_display = ('id', 'user', 'recipe_name', 'recipe_author')
-    search_fields = ('user__username', 'recipe__name')
+    """Базовый класс для избранного, покупок и подписок."""
+    list_display = ('id', 'user_email', 'recipe_info')
+    search_fields = ('user__username', 'user__email', 'recipe__name')
     raw_id_fields = ('user', 'recipe')
     ordering = ('-id',)
 
     def get_queryset(self, request):
-        """Оптимизация: select_related для user и recipe__author."""
         return super().get_queryset(request).select_related(
-            'user',
-            'recipe__author'
+            'user', 'recipe__author'
         )
 
-    def recipe_name(self, obj):
-        return obj.recipe.name
-    recipe_name.short_description = 'Рецепт'
+    def user_email(self, obj):
+        return obj.user.email
+    user_email.short_description = 'Email пользователя'
+    user_email.admin_order_field = 'user__email'
 
-    def recipe_author(self, obj):
-        return obj.recipe.author.username
-    recipe_author.short_description = 'Автор рецепта'
+    def recipe_info(self, obj):
+        return f'{obj.recipe.name} (автор: {obj.recipe.author.username})'
+    recipe_info.short_description = 'Рецепт'
 
 
 @admin.register(Favorite)
@@ -151,6 +151,33 @@ class CustomUserAdmin(UserAdmin):
             ),
         }),
     )
+
+
+# Подписки
+from .models import Subscription
+
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'subscriber_email', 'author_email', 'created')
+    search_fields = (
+        'user__email', 'user__username', 'author__email', 'author__username'
+    )
+    raw_id_fields = ('user', 'author')
+    ordering = ('-created',)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('user', 'author')
+
+    def subscriber_email(self, obj):
+        return obj.user.email
+    subscriber_email.short_description = 'Подписчик'
+    subscriber_email.admin_order_field = 'user__email'
+
+    def author_email(self, obj):
+        return obj.author.email
+    author_email.short_description = 'Автор'
+    author_email.admin_order_field = 'author__email'
 
 
 admin.site.unregister(Group)

@@ -153,10 +153,6 @@ class CustomUserAdmin(UserAdmin):
     )
 
 
-# Подписки
-
-
-
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('id', 'subscriber_email', 'author_email', 'created')

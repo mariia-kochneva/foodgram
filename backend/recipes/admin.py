@@ -82,8 +82,9 @@ class RecipeAdmin(ShortTextMixin, admin.ModelAdmin):
 
 
 class BaseUserRecipeAdmin(admin.ModelAdmin):
-    """Базовый класс для избранного, покупок и подписок."""
-    list_display = ('id', 'user_email', 'recipe_info')
+    """Базовый класс для избранного и списка покупок."""
+    list_display = ('id', 'favorite_info', 'author_info')
+    list_filter = ('recipe__tags',)
     search_fields = ('user__username', 'user__email', 'recipe__name')
     raw_id_fields = ('user', 'recipe')
     ordering = ('-id',)
@@ -91,16 +92,15 @@ class BaseUserRecipeAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).select_related(
             'user', 'recipe__author'
-        )
+        ).prefetch_related('recipe__tags')
 
-    def user_email(self, obj):
-        return obj.user.email
-    user_email.short_description = 'Email пользователя'
-    user_email.admin_order_field = 'user__email'
+    def favorite_info(self, obj):
+        return f'{obj.user.email} — "{obj.recipe.name}"'
+    favorite_info.short_description = 'Избранное/Покупки'
 
-    def recipe_info(self, obj):
-        return f'{obj.recipe.name} (автор: {obj.recipe.author.username})'
-    recipe_info.short_description = 'Рецепт'
+    def author_info(self, obj):
+        return obj.recipe.author.username
+    author_info.short_description = 'Автор рецепта'
 
 
 @admin.register(Favorite)
@@ -111,6 +111,25 @@ class FavoriteAdmin(BaseUserRecipeAdmin):
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(BaseUserRecipeAdmin):
     pass
+
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    """Подписки."""
+    list_display = ('id', 'subscription_info', 'created')
+    list_filter = ('created',)
+    search_fields = (
+        'user__email', 'user__username', 'author__email', 'author__username'
+    )
+    raw_id_fields = ('user', 'author')
+    ordering = ('-created',)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('user', 'author')
+
+    def subscription_info(self, obj):
+        return f'{obj.user.email} подписан на {obj.author.email}'
+    subscription_info.short_description = 'Подписка'
 
 
 @admin.register(User)
@@ -151,29 +170,6 @@ class CustomUserAdmin(UserAdmin):
             ),
         }),
     )
-
-
-@admin.register(Subscription)
-class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'subscriber_email', 'author_email', 'created')
-    search_fields = (
-        'user__email', 'user__username', 'author__email', 'author__username'
-    )
-    raw_id_fields = ('user', 'author')
-    ordering = ('-created',)
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).select_related('user', 'author')
-
-    def subscriber_email(self, obj):
-        return obj.user.email
-    subscriber_email.short_description = 'Подписчик'
-    subscriber_email.admin_order_field = 'user__email'
-
-    def author_email(self, obj):
-        return obj.author.email
-    author_email.short_description = 'Автор'
-    author_email.admin_order_field = 'author__email'
 
 
 admin.site.unregister(Group)

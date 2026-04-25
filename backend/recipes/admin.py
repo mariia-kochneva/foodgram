@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 from django.db.models import Count
 
-from users.models import User
+from users.models import User, Subscription
 from .constants import SHORT_TEXT_LENGTH
 from .models import (
     Favorite, Ingredient, Recipe, RecipeIngredient, ShoppingCart, Tag
@@ -154,7 +154,7 @@ class CustomUserAdmin(UserAdmin):
 
 
 # Подписки
-from .models import Subscription
+
 
 
 @admin.register(Subscription)
